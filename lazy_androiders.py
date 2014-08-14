@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Lazy Androiders is a simple script that downloads and sets ups the android tools for you. Easy Peezy! No more hassles!"""
+"""Lazy Androiders is a tool that downloads and sets ups the android tools for you. Easy Peezy! No more hassles!"""
  
 __author__ = "Alexandre Juca"
 __email__  = "corextechnologies@gmail.com"
