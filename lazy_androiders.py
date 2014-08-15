@@ -49,8 +49,10 @@ __SDK_TOOLS__ = "http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz" #bo
 future_path = ""
 
 def installEclipse():
-    if (sb.call(['apt-get', 'install','eclipse']) == True):
-        print("Done")
+    sb.call(['apt-get', 'install','eclipse'])
+    print("installed eclipse")
+    main()
+    
 
 def extractFile(future_path):
     if future_path.endswith('.zip') == True:
