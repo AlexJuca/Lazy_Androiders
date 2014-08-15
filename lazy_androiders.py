@@ -29,10 +29,13 @@ import os
 import platform
 import urllib.request as urlreq
 import shutil
-
+import tarfile as TarFile
+import zipfile
+import subprocess as sb
+import _thread as thread
 
 __VERSION__ = "Version 1.0"
-__AUTHOR__ = "Alexandre Juca corextechnologies@gmail.com"
+__AUTHOR__ = "Alexandre Juca <corextechnologies@gmail.com>"
 __INFO__ = "Lazy Android - The lazy Android Developers mate."
 __ADT_LINUX_32__ = "http://dl.google.com/android/adt/adt-bundle-linux-x86-20140702.zip"
 __ADT_LINUX_64__ = "http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20140702.zip"
@@ -45,6 +48,20 @@ __SDK_TOOLS__ = "http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz" #bo
 
 future_path = ""
 
+def installEclipse():
+    if (sb.call(['apt-get', 'install','eclipse']) == True):
+        print("Done")
+
+def extractFile(future_path):
+    if future_path.endswith('.zip') == True:
+        print("Unzipping to : "+future_path+" patience will be needed.")
+        zipfile.extractall(future_path, None, None)
+    if future_path.endswith('.tgz') == True:
+        print("Extracting file to : "+future_path+" patience will be needed.")
+        TarFile.extractall(future_path, None)
+    else:
+        print("Format seems wrong....")
+        return
 
 def checkJVM():
     print("Checking if JVM is installed....")
@@ -53,11 +70,12 @@ def checkJVM():
             return True
     else:
             print("Bummer! JVM is not installed but I'll download that right away for ye!")
+            print("#########################################################")
             return False
     
 
-def progress():
-    print("working...")#working on this
+def progress(chunk, max_size, total_size):
+        print("working... "+str(chunk))#working on this
     
 def is_86bit():
 
@@ -90,16 +108,20 @@ def handleDownloads(option, systemVersion):
     try:
         if option == 1 and systemVersion == 32:
             future_path = __INSTALL_PATH__+__FILENAME_32__
-            urlreq.urlretrieve(__ADT_LINUX_32__, future_path, progress())
+            urlreq.urlretrieve(__ADT_LINUX_32__, future_path, progress(0, 100000*100000, -1))
+            extractFile(future_path)
         if option == 1 and systemVersion == 64:
             future_path  = __INSTALL_PATH__+__FILENAME_64__
-            urlreq.urlretrieve( __ADT_LINUX_64__, future_path, progress())
+            urlreq.urlretrieve( __ADT_LINUX_64__, future_path, progress(0, 100000*100000, -1))
+            extractFile(future_path)
         if option == 2 and systemVersion == 64:
             future_path = __INSTALL_PATH__+ __FILENAME_SDK__
-            urlreq.urlretrieve( __ADT_LINUX_64__, future_path, progress())
+            urlreq.urlretrieve( __ADT_LINUX_64__, future_path, progress(0, 100000*100000, -1))
+            extractFile(future_path)
         if option == 2 and systemVersion == 32:
             future_path = __INSTALL_PATH__+__FILENAME_SDK__
-            urlreq.urlretrieve( __ADT_LINUX_64__, future_path, progress())
+            urlreq.urlretrieve( __ADT_LINUX_64__, future_path, progress(0, 100000*100000, -1))
+            extractFile(future_path)
         
     except OSError as e:
         print(e)
@@ -159,7 +181,7 @@ def main():
                     print("OS architecture is 64bit | x64 I am downloading the x64 version of android for you.")
                     askTypeOfDownload(systemVersion)
             else:
-                print("JVM is not installed on this machine.")
+                installEclipse()
                 
         else:
             print("I currently don't support systems like your using just yet but you can talk to my author about it. He made me.")
