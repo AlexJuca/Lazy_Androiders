@@ -56,10 +56,31 @@ __WIN_JVM_PATH__ = "C:/Program Files/Java/"
 __SDK_TOOLS__ = "http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz"
 #Downloading the executable which is the recommened way to install the sdk tools for windows
 __WIN_SDK_TOOLS = "http://dl.google.com/android/installer_r23.0.2-windows.exe"
-
+__WIN_JDK_32__ = "http://download.oracle.com/otn-pub/java/jdk/8u11-b12/jdk-8u11-windows-i586.exe"
+__WIN_JDK_64__ = "http://download.oracle.com/otn-pub/java/jdk/8u11-b12/jdk-8u11-windows-x64.exe"
 
 future_path = ""
+__jvm_download_path__ = "jdk_install/"
 
+
+def execjdk(path):
+    if os.path.isfile(path):
+        sb.call(['start', path])
+    else:
+        print("Seems like the downloaded jdk file is not in "+path)
+
+
+def downloadjvm():
+    if is_86bit():
+        jpath =  __jvm_download_path__+"jdk-8u11-windows-i586.exe"
+        urlreq.urlretrieve(__WIN_JDK_32__, jpath,
+                           progress(0, 100000*100000, -1))
+        execjdk(jpath)
+    if is_86bit() is False:
+        jpath = __jvm_download_path__+"jdk-8u11-windows-x64.exe"
+        urlreq.urlretrieve(__WIN_JDK_64__, jpath,
+                           progress(0, 100000*100000, -1))
+        execjdk(jpath)
 
 def installeclipse():
     sb.call(['apt-get', 'install', 'eclipse'])
@@ -267,7 +288,8 @@ def main():
                     systemarchversion = 64
                     print("OS architecture is 64bit | x64 I am downloading the x64 version of android for you.")
                     asktypeOfdownload(op_system, systemarchversion)
-
+            else:
+                    downloadjvm()
 
         else:
             print("I currently don't support systems like your using just yet but "
