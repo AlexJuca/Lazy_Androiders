@@ -64,7 +64,7 @@ __jvm_download_path__ = "jdk_install/"
 
 
 def execjdk(path):
-    if os.path.isfile(path):
+    if os.path.isfile(path) and path.endswith('.exe'):
         sb.call(['start', path])
     else:
         print("Seems like the downloaded jdk file is not in "+path)
@@ -72,7 +72,7 @@ def execjdk(path):
 
 def downloadjvm():
     if is_86bit():
-        jpath =  __jvm_download_path__+"jdk-8u11-windows-i586.exe"
+        jpath = __jvm_download_path__+"jdk-8u11-windows-i586.exe"
         urlreq.urlretrieve(__WIN_JDK_32__, jpath,
                            progress(0, 100000*100000, -1))
         execjdk(jpath)
@@ -81,6 +81,7 @@ def downloadjvm():
         urlreq.urlretrieve(__WIN_JDK_64__, jpath,
                            progress(0, 100000*100000, -1))
         execjdk(jpath)
+
 
 def installeclipse():
     sb.call(['apt-get', 'install', 'eclipse'])
