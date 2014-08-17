@@ -1,5 +1,8 @@
 Lazy Androiders is a tool that downloads and sets ups the android tools for you. No need to waste time setting up tools. Go the lazy route!
 
+This is the test branch for windows! 
+Added slight support for windows
+
 Lazy Android fetches the android tools sdk or ADT depending on your preferences, installs eclipse and installs the JVM if you don't already have them in your system. 
 
 Please be aware that the tool does not currently work for Windows systems.
