@@ -81,6 +81,8 @@ def extractfile(future_path):
 
 def checkjvm(op_system):
     print("Checking if JVM is installed....")
+    #XXX: I could rather check the windows registry for the JDK installation
+    #This might give an error on 64 bit machines with a 32 bit jdk if that's even possisble
     if os.path.exists(__JVM_PATH__) or os.path.exists(__WIN_JVM_PATH__):
             print("Super! JVM seems to be here..Next step please!")
             return True
