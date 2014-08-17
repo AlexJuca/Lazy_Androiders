@@ -33,18 +33,29 @@ import tarfile as tarfile
 import zipfile
 import subprocess as sb
 
+
 __VERSION__ = "Version 1.0"
 __AUTHOR__ = "Alexandre Juca <corextechnologies@gmail.com>"
 __INFO__ = "Lazy Android - The lazy Android Developers mate."
+#########################################################################################
 __ADT_LINUX_32__ = "http://dl.google.com/android/adt/adt-bundle-linux-x86-20140702.zip"
 __ADT_LINUX_64__ = "http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20140702.zip"
+#########################################################################################
+__ADT_WIN_32__ = "http://dl.google.com/android/adt/adt-bundle-windows-x86-20140702.zip"
+__ADT_WIN_64__ = "http://dl.google.com/android/adt/adt-bundle-windows-x86_64-20140702.zip"
+#########################################################################################
 __INSTALL_PATH__ = "lazy_androiders/"
 __FILENAME_32__ = "adt-bundle-linux-x86-20140702.zip"
 __FILENAME_64__ = "adt-bundle-linux-x86_64-20140702.zip"
 __FILENAME_SDK__ = "android-sdk_r23.0.2-linux.tgz"
+#########################################################################################
 __JVM_PATH__ = "/usr/lib/jvm/"
+__WIN_JVM_PATH__ = "C:/Program Files/Java/"
+#########################################################################################
 #both 32 bit and 64bit packages are included in this package
 __SDK_TOOLS__ = "http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz"
+#Downloading the executable which is the recommened way to install the sdk tools for windows
+__WIN_SDK_TOOLS = "http://dl.google.com/android/installer_r23.0.2-windows.exe"
 
 
 future_path = ""
@@ -68,9 +79,9 @@ def extractfile(future_path):
         return
 
 
-def checkjvm():
+def checkjvm(op_system):
     print("Checking if JVM is installed....")
-    if os.path.exists(__JVM_PATH__):
+    if os.path.exists(__JVM_PATH__) or os.path.exists(__WIN_JVM_PATH__):
             print("Super! JVM seems to be here..Next step please!")
             return True
     else:
@@ -100,6 +111,14 @@ def makeandroidpath():
         print("Directory Error: ", e)
 
 
+def iswindows():
+    if platform.system().endswith('Windows'):
+        print("You're a Bill Gates fanatic..Got Windows for sure! :)")
+        return True
+    else:
+        return False
+
+
 def islinux():
     if platform.system().endswith('Linux'):
         print("Alrighty, seems to me you have a Linux baby! Nice! :) ")
@@ -109,23 +128,46 @@ def islinux():
         return False
 
 
+def handle_win_downloads(option, systemversion):
+    try:
+        if option == 1 and systemversion == 32:
+            future_path = __INSTALL_PATH__+__FILENAME_32__
+            urlreq.urlretrieve(__ADT_WIN_32__, future_path, progress(0, 100000*100000, -1))
+            extractfile(future_path)
+        if option == 1 and systemversion == 64:
+            future_path = __INSTALL_PATH__+__FILENAME_64__
+            urlreq.urlretrieve(__ADT_WIN_64__, future_path, progress(0, 100000*100000, -1))
+            extractfile(future_path)
+        if option == 2 and systemversion == 64:
+            future_path = __INSTALL_PATH__ + __FILENAME_SDK__
+            urlreq.urlretrieve(__WIN_SDK_TOOLS, future_path, progress(0, 100000*100000, -1))
+            extractfile(future_path)
+        if option == 2 and systemversion == 32:
+            future_path = __INSTALL_PATH__+__FILENAME_SDK__
+            urlreq.urlretrieve(__WIN_SDK_TOOLS, future_path, progress(0, 100000*100000, -1))
+            extractfile(future_path)
+
+    except OSError as e:
+        print(e)
+        return
+
 def handledownloads(option, systemversion):
     try:
         if option == 1 and systemversion == 32:
             future_path = __INSTALL_PATH__+__FILENAME_32__
-            urlreq.urlretrieve(__ADT_LINUX_32__, future_path, progress(0, 100000*100000, -1))
+            urlreq.urlretrieve(__ADT_LINUX_32__, future_path, progress(0, 100000*100000, 0))
             extractfile(future_path)
         if option == 1 and systemversion == 64:
             future_path = __INSTALL_PATH__+__FILENAME_64__
-            urlreq.urlretrieve(__ADT_LINUX_64__, future_path, progress(0, 100000*100000, -1))
+            urlreq.urlretrieve(__ADT_LINUX_64__, future_path, progress(0, 100000*100000, 0))
             extractfile(future_path)
         if option == 2 and systemversion == 64:
             future_path = __INSTALL_PATH__+ __FILENAME_SDK__
-            urlreq.urlretrieve(__ADT_LINUX_64__, future_path, progress(0, 100000*100000, -1))
+            urlreq.urlretrieve(__SDK_TOOLS__, future_path, progress(0, 100000*100000, 0))
             extractfile(future_path)
         if option == 2 and systemversion == 32:
             future_path = __INSTALL_PATH__+__FILENAME_SDK__
-            urlreq.urlretrieve(__ADT_LINUX_64__, future_path, progress(0, 100000*100000, -1))
+            urlreq.urlretrieve(__SDK_TOOLS__, future_path, progress(0, 100000*100000, 0))
             extractfile(future_path)
 
     except OSError as e:
@@ -133,7 +175,7 @@ def handledownloads(option, systemversion):
         return
 
 
-def asktypeOfdownload(systemversion):
+def asktypeOfdownload(op_system, systemversion):
     sysversion = systemversion
     option = input("Type 1 for ATD Bundle or 2 for SDK Tools only: ")
     print()
@@ -146,24 +188,46 @@ def asktypeOfdownload(systemversion):
     try:
         option = int(option)
 
-        if type(option) == int and sysversion == 32:
-            if option == 1:
-                print("Awesome! Downloading the 32 bit ADT Bundle for you, please wait.")
-                handledownloads(option, sysversion)
+        if op_system == "Linux":
+                if type(option) == int and sysversion == 32:
+                    if option == 1:
+                        print("Awesome! Downloading the "+op_system+" 32 bit ADT Bundle for you, please wait.")
+                        handledownloads(option, sysversion)
 
-            if option == 2:
-                print("Awesome! Downloading the 32 bit SDK Tools for you, please wait.")
-                handledownloads(option, sysversion)
+                    if option == 2:
+                        print("Awesome! Downloading the "+op_system+" 32 bit SDK Tools for you, please wait.")
+                        handledownloads(option, sysversion)
 
-        if type(option) == int and sysversion == 64:
+                if type(option) == int and sysversion == 64:
 
-            if option == 1:
-                print("Awesome! Downloading 64 bit ADT Bundle for you, please wait.")
-                handledownloads(option, sysversion)
+                    if option == 1:
+                        print("Awesome! Downloading "+op_system+" 64 bit ADT Bundle for you, please wait.")
+                        handledownloads(option, sysversion)
 
-            if option == 2:
-                print("Awesome! Downloading the 64 bit SDK Tools for you, please wait.")
-                handledownloads(option, sysversion)
+                    if option == 2:
+                        print("Awesome! Downloading the "+op_system+" 64 bit SDK Tools for you, please wait.")
+                        handledownloads(option, sysversion)
+
+        if op_system == "Windows":
+            if type(option) == int and sysversion == 32:
+                    if option == 1:
+                        print("Awesome! Downloading the "+op_system+" 32 bit ADT Bundle for you, please wait.")
+                        handle_win_ownloads(option, sysversion)
+
+                    if option == 2:
+                        print("Awesome! Downloading the "+op_system+" 32 bit SDK Tools for you, please wait.")
+                        handle_win_downloads(option, sysversion)
+
+            if type(option) == int and sysversion == 64:
+
+                    if option == 1:
+                        print("Awesome! Downloading the "+op_system+" 64 bit ADT Bundle for you, please wait.")
+                        handle_win_downloads(option, sysversion)
+
+                    if option == 2:
+                        print("Awesome! Downloading the "+op_system+" 64 bit SDK Tools for you, please wait.")
+                        handle_win_downloads(option, sysversion)
+
 
     except Exception as e:
         print("That's not a number, try again.", e)
@@ -175,21 +239,33 @@ def main():
     print(__AUTHOR__)
     print(__VERSION__)
     print("#########################################################")
-    systemVersion = 32
-
+    systemarchversion = 32
+    op_system = ""
     try:
         print("I am trying to figure out what OS you are running on...")
         if islinux():
-            if checkjvm():
+            op_system = "Linux"
+            if checkjvm(op_system):
                 if is_86bit():
                     print("OS architecture is 32bit | x86 I am downloading the x86 version of android for you.")
-                    asktypeOfdownload(systemVersion)
+                    asktypeOfdownload(op_system, systemarchversion)
                 else:
-                    systemVersion = 64
+                    systemarchversion = 64
                     print("OS architecture is 64bit | x64 I am downloading the x64 version of android for you.")
-                    asktypeOfdownload(systemVersion)
+                    asktypeOfdownload(op_system, systemarchversion)
             else:
                 installeclipse()
+        if iswindows():
+            op_system = "Windows"
+            if checkjvm(op_system):
+                if is_86bit():
+                    print("OS architecture is 32bit | x86 I am downloading the x86 version of android for you.")
+                    asktypeOfdownload(op_system, systemarchversion)
+                else:
+                    systemarchversion = 64
+                    print("OS architecture is 64bit | x64 I am downloading the x64 version of android for you.")
+                    asktypeOfdownload(op_system, systemarchversion)
+
 
         else:
             print("I currently don't support systems like your using just yet but "
