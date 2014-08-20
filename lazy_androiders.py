@@ -236,7 +236,7 @@ def asktypeOfdownload(op_system, systemversion):
             if type(option) == int and sysversion == 32:
                     if option == 1:
                         print("Awesome! Downloading the "+op_system+" 32 bit ADT Bundle for you, please wait.")
-                        handle_win_ownloads(option, sysversion)
+                        handle_win_downloads(option, sysversion)
 
                     if option == 2:
                         print("Awesome! Downloading the "+op_system+" 32 bit SDK Tools for you, please wait.")
@@ -254,7 +254,7 @@ def asktypeOfdownload(op_system, systemversion):
 
 
     except Exception as e:
-        print("That's not a number, try again.", e)
+        print("That's not a valid option, try again.", e)
         asktypeOfdownload(sysversion)
 
 def main():
