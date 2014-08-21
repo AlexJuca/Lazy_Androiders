@@ -4,7 +4,7 @@
 
 Lazy Androiders is a tool that downloads and sets ups the android tools for you. No need to waste time setting up tools. Go the lazy route!
 
-# What does it really install for you?
+## What does it really install for you?
 
 Lazy Androiders installs eclipse and the jdk if you don't have them and downloads the android sdk or ADT Bundle for you too. It's sometimes a hassle to do all this yourself. Right? 
 
@@ -23,6 +23,8 @@ Unfortunately it does not show progress yet :(.
 any bugs please email me corextechnologies@gmail.com
 
 Don't have python installed? Get it here! https://www.python.org/
+
+## License
 
 
 Copyright (c) 2013-2014 Alexandre Juca <corextechnologies@gmail.com>
