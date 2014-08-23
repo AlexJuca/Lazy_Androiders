@@ -4,7 +4,7 @@
 
 Lazy Androiders is a tool that downloads and sets ups the android tools for you. No need to waste time setting up tools. Go the lazy route!
 
-![alt text](https://github.com/AlexJuca/Lazy_Androiders/prev.png "Preview")
+![Preview](https://github.com/AlexJuca/Lazy_Androiders/blob/master/prev.png "Preview")
 
 ## What does it really install for you?
 
