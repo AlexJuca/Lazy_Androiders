@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Lazy Androiders is a tool that downloads and sets ups the android tools for you. Easy Peezy! No more hassles!"""
+"""Lazy Androiders is a simple tool that downloads and sets ups the android tools and dependencies for you. Now it's easy Peezy! No more hassles!"""
 
 __author__ = "Alexandre Juca"
 __email__ = "corextechnologies@gmail.com"
@@ -32,6 +32,11 @@ import shutil
 import tarfile as tarfile
 import zipfile
 import subprocess as sb
+import sys
+
+if sys.hexversion < 0x3040000:
+	print("Please install python3.4 and up to use this.")
+	exit(1)
 
 
 __VERSION__ = "Version 1.0"
@@ -115,10 +120,13 @@ def checkjvm(op_system):
 
 
 def progress(chunk, max_size, total_size):
-        print("working... "+str(chunk))#working on this
+        print("I'm downloading the dependencies for your system, have a cup of coffee while I work.... "+str(chunk)) #We need to find a way to display progress during the download process
 
 
 def is_86bit():
+    """
+	Check if the machine is 32 bit or not
+    """
     if platform.machine().endswith('86'):
         return True
     else:
