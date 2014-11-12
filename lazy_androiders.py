@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-"""Lazy Androiders is a simple tool that downloads and sets ups the android tools and dependencies for you. Now it's easy Peezy! No more hassles!"""
+"""
+Lazy Androiders is a simple tool that downloads and sets ups the android tools and dependencies for you.
+Now it's easy Peezy! No more hassles!
+"""
 
 __author__ = "Alexandre Juca"
 __email__ = "corextechnologies@gmail.com"
@@ -29,21 +32,19 @@ import os
 import platform
 import urllib.request as urlreq
 import shutil
-import tarfile as tarfile
-import zipfile
 import subprocess as sb
 import sys
 
 if sys.hexversion < 0x3040000:
-	print("Please install python3.4 and up to use this.")
-	exit(1)
+    print("Please install python3.4 and up to use Lazy Androiders.")
+    sys.exit(1)
 
 
 __VERSION__ = "Version 1.0"
 __AUTHOR__ = "Alexandre Juca <corextechnologies@gmail.com>"
 __INFO__ = "Lazy Android - The lazy Android Developers mate."
 #########################################################################################
-__ADT_LINUX_32__ = "http://dl.google.com/android/adt/adt-bundle-linux-x86-20140702.zip"
+__ADT_LINUX_32__ = "https://dl.google.com/android/adt/adt-bundle-linux-x86-20140702.zip"
 __ADT_LINUX_64__ = "http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20140702.zip"
 #########################################################################################
 __ADT_WIN_32__ = "http://dl.google.com/android/adt/adt-bundle-windows-x86-20140702.zip"
@@ -89,22 +90,35 @@ def downloadjvm():
 
 
 def installeclipse():
+    print("Installing eclipse....")
     sb.call(['apt-get', 'install', 'eclipse'])
-    print("installed eclipse")
+    print("eclipse has been installed on your system.")
     main()
 
 
-def extractfile(future_path):
-    if future_path.endswith('.zip'):
-        print("Unzipping to : "+future_path+" patience will be needed.")
-        zipfile.extractall(future_path, None, None)
-    if future_path.endswith('.tgz'):
-        print("Extracting file to : "+future_path+" patience will be needed.")
-        tarfile.extractall(future_path, None)
+def extractfile(output_path):
+    if output_path.endswith('.zip'):
+        print("Unzipping to : "+output_path+" patience will be needed.")
+        try:
+            sb.call(["unzip", "-d android-dev/", output_path])
+            print("Extracted contents to : android-dev/")
+            sys.exit(0)
+        except Exception as e:
+            print("Failed in extraction phase: %s", e)
+            sys.exit(1)
+
+    if output_path.endswith('.tgz'):
+        print("Extracting file to : "+output_path+" patience will be needed.")
+        try:
+            sb.call(["unzip", "-d android-dev/", output_path])
+            print("Extracted contents to : android-dev/")
+        except Exception as e:
+            print("Failed in extraction phase: %s", e)
+            sys.exit(1)
+
     else:
         print("Format seems wrong....")
-        return
-
+        sys.exit(1)
 
 def checkjvm(op_system):
     print("Checking if JVM is installed....")
@@ -124,8 +138,8 @@ def progress(chunk, max_size, total_size):
 
 
 def is_86bit():
-    """
-	Check if the machine is 32 bit or not
+    """Check if the machine is 32 bit or not
+
     """
     if platform.machine().endswith('86'):
         return True
@@ -183,38 +197,39 @@ def handle_win_downloads(option, systemversion):
         print(e)
         return
 
+
 def handledownloads(option, systemversion):
     try:
         if option == 1 and systemversion == 32:
-            future_path = __INSTALL_PATH__+__FILENAME_32__
-            urlreq.urlretrieve(__ADT_LINUX_32__, future_path, progress(0, 100000*100000, 0))
-            extractfile(future_path)
+            extract_path = __INSTALL_PATH__+__FILENAME_32__
+            urlreq.urlretrieve(__ADT_LINUX_32__, extract_path, progress(0, 100000*100000, 0))
+            extractfile(extract_path)
         if option == 1 and systemversion == 64:
-            future_path = __INSTALL_PATH__+__FILENAME_64__
-            urlreq.urlretrieve(__ADT_LINUX_64__, future_path, progress(0, 100000*100000, 0))
-            extractfile(future_path)
+            extract_path = __INSTALL_PATH__+__FILENAME_64__
+            urlreq.urlretrieve(__ADT_LINUX_64__, extract_path, progress(0, 100000*100000, 0))
+            extractfile(extract_path)
         if option == 2 and systemversion == 64:
-            future_path = __INSTALL_PATH__+ __FILENAME_SDK__
-            urlreq.urlretrieve(__SDK_TOOLS__, future_path, progress(0, 100000*100000, 0))
-            extractfile(future_path)
+            extract_path = __INSTALL_PATH__+ __FILENAME_SDK__
+            urlreq.urlretrieve(__SDK_TOOLS__, extract_path, progress(0, 100000*100000, 0))
+            extractfile(extract_path)
         if option == 2 and systemversion == 32:
-            future_path = __INSTALL_PATH__+__FILENAME_SDK__
-            urlreq.urlretrieve(__SDK_TOOLS__, future_path, progress(0, 100000*100000, 0))
-            extractfile(future_path)
+            extract_path = __INSTALL_PATH__+__FILENAME_SDK__
+            urlreq.urlretrieve(__SDK_TOOLS__, extract_path, progress(0, 100000*100000, 0))
+            extractfile(extract_path)
 
     except OSError as e:
         print(e)
         return
 
 
-def asktypeOfdownload(op_system, systemversion):
+def asktypeofdownload(op_system, systemversion):
     sysversion = systemversion
     option = input("Type 1 for ATD Bundle or 2 for SDK Tools only: ")
     print()
     try:
         makeandroidpath()
     except Exception as e:
-        print("Error :", e)
+        print("Error creating path :", e)
         return
 
     try:
@@ -260,10 +275,9 @@ def asktypeOfdownload(op_system, systemversion):
                         print("Awesome! Downloading the "+op_system+" 64 bit SDK Tools for you, please wait.")
                         handle_win_downloads(option, sysversion)
 
-
     except Exception as e:
         print("That's not a valid option, try again.", e)
-        asktypeOfdownload(sysversion)
+        asktypeofdownload(sysversion)
 
 def main():
     print("#########################################################")
@@ -280,11 +294,11 @@ def main():
             if checkjvm(op_system):
                 if is_86bit():
                     print("OS architecture is 32bit | x86 I am downloading the x86 version of android for you.")
-                    asktypeOfdownload(op_system, systemarchversion)
+                    asktypeofdownload(op_system, systemarchversion)
                 else:
                     systemarchversion = 64
                     print("OS architecture is 64bit | x64 I am downloading the x64 version of android for you.")
-                    asktypeOfdownload(op_system, systemarchversion)
+                    asktypeofdownload(op_system, systemarchversion)
             else:
                 installeclipse()
         if iswindows():
@@ -292,17 +306,19 @@ def main():
             if checkjvm(op_system):
                 if is_86bit():
                     print("OS architecture is 32bit | x86 I am downloading the x86 version of android for you.")
-                    asktypeOfdownload(op_system, systemarchversion)
+                    asktypeofdownload(op_system, systemarchversion)
                 else:
                     systemarchversion = 64
                     print("OS architecture is 64bit | x64 I am downloading the x64 version of android for you.")
-                    asktypeOfdownload(op_system, systemarchversion)
+                    asktypeofdownload(op_system, systemarchversion)
             else:
                     downloadjvm()
 
         else:
             print("I currently don't support systems like your using just yet but "
                   "you can talk to my author about it. He made me.")
+            sys.exit(1)
+
     except KeyboardInterrupt:
 
         if os.path.exists(__INSTALL_PATH__):
